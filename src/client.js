@@ -11,6 +11,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
 import reducers from './reducers/index';
 
+import MainLis from './components/pages/MainList';
 import AVsList from './components/pages/AvList';
 import BVsList from './components/pages/BvList';
 import AvItem from './components/pages/AvItem';
@@ -34,7 +35,7 @@ const Routes = (
       <div> 
         <Menu />
           <Switch>
-            <Route exact path="/" component={AVsList}/>
+            <Route exact path="/" component={MainLis}/>
             <Route exact path="/binary" component={BVsList}/>
             <Route exact path="/analog" component={AVsList}/>
             <Route path="/admin" component={AVsList}/>

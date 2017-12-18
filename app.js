@@ -86,6 +86,41 @@ app.get('/bv', function(req, res) {
 
 
 
+//---->>> UPDATE BOOKS <<<------
+app.put('/bv/:_id', function(req, res) {
+  var bv = req.body;
+  var query = {_id: req.params._id};
+  bv._id = req.params._id;
+  //console.log("QUERY:\n",query);
+  // if the field doesn't exist $set will set  a new field
+
+
+//NEED TO CONVERT BACnet API save value
+
+  var update = {
+    '$set': {
+      value: bv.value,
+    }
+  };
+  // When true returns the updated document
+  var options = {
+    new: true
+  };
+  BVs.findOneAndUpdate(query, update, options, function(err, books) {
+    if (err) {
+      throw err;
+    }
+    res.json(bv);
+  })
+})
+
+// END APIs
+
+
+
+
+
+
 // END APIs
 
 

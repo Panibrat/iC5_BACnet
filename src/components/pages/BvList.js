@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {getBVs} from '../../actions/BVsActions';
+import {getBVs, toggleBV} from '../../actions/BVsActions';
 import { Grid, Row, Col } from 'react-bootstrap';
 import BvItem from './BvItem';
 
@@ -19,7 +19,8 @@ export class BVsList extends React.Component {
                 <BvItem
                     title={BV.title}
                     description={BV.description}                    
-                    value={BV.value}                    
+                    value={BV.value} 
+                    _id={BV._id}                   
                 />
             </Col>
         )
@@ -44,7 +45,9 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    getBVs: getBVs
+    getBVs: getBVs,
+    toggleBV: toggleBV
+    
   }, dispatch)
 }
 

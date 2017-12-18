@@ -20,3 +20,27 @@ export function getBVs() {
     })
   }
 }
+
+export function toggleBV(bv) {   
+  return function(dispatch){  
+    console.log('BV:', bv);
+     
+    const _id = bv._id;
+
+    axios.put('/bv/' + _id, bv)
+    .then((responce) => {
+      var bvs = responce.data;      
+      dispatch({
+        type:"TOGGLE_BV",
+        payload: bvs
+      })
+    })
+    .catch((err) => {
+      console.log("\nGET responce ERROR\n", err);
+      dispatch({
+        type:"GET_BVS_REJECTED",
+        payload:"there was an error while getting binary values"        
+      })
+    })
+  }
+}

@@ -20846,6 +20846,10 @@ var _index = __webpack_require__(394);
 
 var _index2 = _interopRequireDefault(_index);
 
+var _MainList = __webpack_require__(565);
+
+var _MainList2 = _interopRequireDefault(_MainList);
+
 var _AvList = __webpack_require__(561);
 
 var _AvList2 = _interopRequireDefault(_AvList);
@@ -20889,7 +20893,7 @@ var Routes = _react2.default.createElement(
       _react2.default.createElement(
         _reactRouterDom.Switch,
         null,
-        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _AvList2.default }),
+        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _MainList2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/binary', component: _BvList2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/analog', component: _AvList2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { path: '/admin', component: _AvList2.default }),
@@ -37167,6 +37171,20 @@ function bvsReducers() {
             return [].concat(_toConsumableArray(bvs), _toConsumableArray(action.payload));
             break;
     }
+
+    switch (action.type) {
+        case "TOGGLE_BV":
+            var newBVs = bvs.map(function (bv) {
+                if (bv._id == action.payload._id) {
+                    bv.value = action.payload.value;
+                    return bv;
+                }
+                return bv;
+            });
+            return newBVs;
+            break;
+    }
+
     return bvs;
 }
 
@@ -49793,7 +49811,8 @@ var BVsList = exports.BVsList = function (_React$Component) {
           _react2.default.createElement(_BvItem2.default, {
             title: BV.title,
             description: BV.description,
-            value: BV.value
+            value: BV.value,
+            _id: BV._id
           })
         );
       });
@@ -49826,7 +49845,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return (0, _redux.bindActionCreators)({
-    getBVs: _BVsActions.getBVs
+    getBVs: _BVsActions.getBVs,
+    toggleBV: _BVsActions.toggleBV
+
   }, dispatch);
 }
 
@@ -49843,6 +49864,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getBVs = getBVs;
+exports.toggleBV = toggleBV;
 
 var _axios = __webpack_require__(399);
 
@@ -49856,6 +49878,28 @@ function getBVs() {
       var bvs = responce.data;
       dispatch({
         type: "GET_BVS",
+        payload: bvs
+      });
+    }).catch(function (err) {
+      console.log("\nGET responce ERROR\n", err);
+      dispatch({
+        type: "GET_BVS_REJECTED",
+        payload: "there was an error while getting binary values"
+      });
+    });
+  };
+}
+
+function toggleBV(bv) {
+  return function (dispatch) {
+    console.log('BV:', bv);
+
+    var _id = bv._id;
+
+    _axios2.default.put('/bv/' + _id, bv).then(function (responce) {
+      var bvs = responce.data;
+      dispatch({
+        type: "TOGGLE_BV",
         payload: bvs
       });
     }).catch(function (err) {
@@ -49885,7 +49929,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRedux = __webpack_require__(108);
+
+var _redux = __webpack_require__(75);
+
 var _reactBootstrap = __webpack_require__(119);
+
+var _BVsActions = __webpack_require__(563);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -49901,13 +49951,24 @@ var BvItem = function (_React$Component) {
   function BvItem(props) {
     _classCallCheck(this, BvItem);
 
-    return _possibleConstructorReturn(this, (BvItem.__proto__ || Object.getPrototypeOf(BvItem)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (BvItem.__proto__ || Object.getPrototypeOf(BvItem)).call(this, props));
+
+    _this.handleClick = _this.handleClick.bind(_this);
+    return _this;
   }
 
   _createClass(BvItem, [{
+    key: 'handleClick',
+    value: function handleClick() {
+      var data = {
+        _id: this.props._id,
+        value: !this.props.value
+      };
+      this.props.toggleBV(data);
+    }
+  }, {
     key: 'render',
     value: function render() {
-
       return _react2.default.createElement(
         _reactBootstrap.Well,
         null,
@@ -49929,6 +49990,15 @@ var BvItem = function (_React$Component) {
               'p',
               null,
               this.props.description
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              {
+                onClick: this.handleClick,
+                bsStyle: this.props.value ? 'danger' : 'primary',
+                bsSize: 'small'
+              },
+              this.props.value ? 'OFF' : 'ON'
             )
           )
         )
@@ -49939,7 +50009,93 @@ var BvItem = function (_React$Component) {
   return BvItem;
 }(_react2.default.Component);
 
-exports.default = BvItem;
+function mapDispatchToProps(dispatch) {
+  return (0, _redux.bindActionCreators)({
+    toggleBV: _BVsActions.toggleBV
+  }, dispatch);
+}
+
+exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(BvItem);
+
+/***/ }),
+/* 565 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MainList = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactBootstrap = __webpack_require__(119);
+
+var _AvList = __webpack_require__(561);
+
+var _AvList2 = _interopRequireDefault(_AvList);
+
+var _BvList = __webpack_require__(562);
+
+var _BvList2 = _interopRequireDefault(_BvList);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MainList = exports.MainList = function (_React$Component) {
+  _inherits(MainList, _React$Component);
+
+  function MainList() {
+    _classCallCheck(this, MainList);
+
+    return _possibleConstructorReturn(this, (MainList.__proto__ || Object.getPrototypeOf(MainList)).apply(this, arguments));
+  }
+
+  _createClass(MainList, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        _reactBootstrap.Grid,
+        { style: { marginTop: '50px' } },
+        _react2.default.createElement(
+          _reactBootstrap.Row,
+          null,
+          _react2.default.createElement(
+            'h3',
+            null,
+            ' Analog Values '
+          ),
+          _react2.default.createElement(_AvList2.default, null)
+        ),
+        _react2.default.createElement(
+          _reactBootstrap.Row,
+          null,
+          _react2.default.createElement(
+            'h3',
+            null,
+            ' Binary Values '
+          ),
+          _react2.default.createElement(_BvList2.default, null)
+        )
+      );
+    }
+  }]);
+
+  return MainList;
+}(_react2.default.Component);
+
+exports.default = MainList;
 
 /***/ })
 /******/ ]);
