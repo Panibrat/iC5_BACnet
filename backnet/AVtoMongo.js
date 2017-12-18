@@ -12,11 +12,12 @@ const avToMongo = function (av, model) {
     var options = {
         new: true
     };
-    model.findOneAndUpdate(query, update, options, function(err) {
+    model.findOneAndUpdate(query, update, options, function(err,res) {
         if (err) {
             throw err;
         }
-        console.log(` ${query.title} updeted to value: ${av.itemValue}`)
+        //console.log(` ${query.title} updeted to value: ${av.itemValue}`)
+        //console.log(` mongo Responce: ${res}`)
     })
 };
 

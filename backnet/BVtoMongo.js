@@ -16,7 +16,7 @@ const bvToMongo = function (bv, model) {
         if (err) {
             throw err;
         }
-        console.log(` ${query.title} updeted to value: ${bv.itemValue}`)
+       // console.log(` ${query.title} updeted to value: ${bv.itemValue}`)
     })
 };
 

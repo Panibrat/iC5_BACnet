@@ -4,7 +4,9 @@ var bacnet = require('bacstack');
 var client = new bacnet();
 const IP = '192.168.0.222';
 
+// const writeBV = (client, IP, pointNumber, valueToSave) => {
 const readAV = require('./backnet/readAVpromise');
+const writeBV = require('./backnet/writeBVpromise');
 const readBV = require('./backnet/readBVpromise');
 const avToMongo = require('./backnet/AVtoMongo');
 const bvToMongo = require('./backnet/BVtoMongo');
@@ -34,30 +36,32 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 //BACnet LOOOP
-// var loopBACnet = setInterval(() => {
-//     readAV(client, IP, 0).then((result) => avToMongo(result, AVs));
-//     readAV(client, IP, 1).then((result) => avToMongo(result, AVs));
-//     readAV(client, IP, 2).then((result) => avToMongo(result, AVs));
-//     readAV(client, IP, 3).then((result) => avToMongo(result, AVs));
-//     readAV(client, IP, 4).then((result) => avToMongo(result, AVs));
-//     readAV(client, IP, 5).then((result) => avToMongo(result, AVs));
-//     readAV(client, IP, 6).then((result) => avToMongo(result, AVs));
-//     readAV(client, IP, 7).then((result) => avToMongo(result, AVs));
-//     readAV(client, IP, 8).then((result) => avToMongo(result, AVs));
-//     readAV(client, IP, 9).then((result) => avToMongo(result, AVs));
+var loopBACnet = setInterval(() => {
+    readAV(client, IP, 0).then((result) => avToMongo(result, AVs));
+    readAV(client, IP, 1).then((result) => avToMongo(result, AVs));
+    readAV(client, IP, 2).then((result) => avToMongo(result, AVs));
+    readAV(client, IP, 3).then((result) => avToMongo(result, AVs));
+    readAV(client, IP, 4).then((result) => avToMongo(result, AVs));
+    readAV(client, IP, 5).then((result) => avToMongo(result, AVs));
+    readAV(client, IP, 6).then((result) => avToMongo(result, AVs));
+    readAV(client, IP, 7).then((result) => avToMongo(result, AVs));
+    readAV(client, IP, 8).then((result) => avToMongo(result, AVs));
+    readAV(client, IP, 9).then((result) => avToMongo(result, AVs));
 
-//     readBV(client, IP, 0).then((result) => bvToMongo(result, BVs));
-//     readBV(client, IP, 1).then((result) => bvToMongo(result, BVs));
-//     readBV(client, IP, 2).then((result) => bvToMongo(result, BVs));
-//     readBV(client, IP, 3).then((result) => bvToMongo(result, BVs));
-//     readBV(client, IP, 4).then((result) => bvToMongo(result, BVs));
-//     readBV(client, IP, 5).then((result) => bvToMongo(result, BVs));
-//     readBV(client, IP, 6).then((result) => bvToMongo(result, BVs));
-//     readBV(client, IP, 7).then((result) => bvToMongo(result, BVs));
-//     readBV(client, IP, 8).then((result) => bvToMongo(result, BVs));
-//     readBV(client, IP, 9).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 0).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 1).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 2).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 3).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 4).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 5).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 6).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 7).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 8).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 9).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 10).then((result) => bvToMongo(result, BVs));
+    readBV(client, IP, 11).then((result) => bvToMongo(result, BVs));
 
-// }, 1000);
+}, 1000);
 
 //readAV(client, IP, 1);
 
@@ -86,6 +90,10 @@ app.get('/bv', function(req, res) {
 
 
 
+
+
+
+
 //---->>> UPDATE BOOKS <<<------
 app.put('/bv/:_id', function(req, res) {
   var bv = req.body;
@@ -93,9 +101,27 @@ app.put('/bv/:_id', function(req, res) {
   bv._id = req.params._id;
   //console.log("QUERY:\n",query);
   // if the field doesn't exist $set will set  a new field
+    const pointNumber = 10;
+    const valueToSave = bv.value;
+
+
+
+
+
 
 
 //NEED TO CONVERT BACnet API save value
+writeBV(client, IP, pointNumber, valueToSave, bacnet)
+    .then((res) => {
+        console.log('writeBV(client, IP, pointNumber, valueToSave, bacnet)\n',  res);
+    })
+    .catch((e) => {
+        console.log('writeBV() ERROR\n', e);
+    });
+
+
+
+//
 
   var update = {
     '$set': {
@@ -112,7 +138,7 @@ app.put('/bv/:_id', function(req, res) {
     }
     res.json(bv);
   })
-})
+});
 
 // END APIs
 
