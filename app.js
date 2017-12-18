@@ -34,34 +34,37 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 //BACnet LOOOP
-var loopBACnet = setInterval(() => {
-    readAV(client, IP, 0).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 1).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 2).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 3).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 4).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 5).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 6).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 7).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 8).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 9).then((result) => avToMongo(result, AVs));
+// var loopBACnet = setInterval(() => {
+//     readAV(client, IP, 0).then((result) => avToMongo(result, AVs));
+//     readAV(client, IP, 1).then((result) => avToMongo(result, AVs));
+//     readAV(client, IP, 2).then((result) => avToMongo(result, AVs));
+//     readAV(client, IP, 3).then((result) => avToMongo(result, AVs));
+//     readAV(client, IP, 4).then((result) => avToMongo(result, AVs));
+//     readAV(client, IP, 5).then((result) => avToMongo(result, AVs));
+//     readAV(client, IP, 6).then((result) => avToMongo(result, AVs));
+//     readAV(client, IP, 7).then((result) => avToMongo(result, AVs));
+//     readAV(client, IP, 8).then((result) => avToMongo(result, AVs));
+//     readAV(client, IP, 9).then((result) => avToMongo(result, AVs));
 
-    readBV(client, IP, 0).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 1).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 2).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 3).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 4).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 5).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 6).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 7).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 8).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 9).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 0).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 1).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 2).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 3).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 4).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 5).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 6).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 7).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 8).then((result) => bvToMongo(result, BVs));
+//     readBV(client, IP, 9).then((result) => bvToMongo(result, BVs));
 
-}, 1000);
+// }, 1000);
+
 //readAV(client, IP, 1);
 
 //----->>>> GET AVS <<<---------
 app.get('/av', function(req, res) {
+  console.log('GET AV');
+  
     AVs.find(function(err, avs) {
         if (err) {
             throw err;
@@ -72,6 +75,7 @@ app.get('/av', function(req, res) {
 
 //----->>>> GET BVS <<<---------
 app.get('/bv', function(req, res) {
+  console.log('GET BV');
     BVs.find(function(err, bvs) {
         if (err) {
             throw err;
@@ -81,75 +85,6 @@ app.get('/bv', function(req, res) {
 });
 
 
-
-
-
-//-----POST BOOKS----------
-app.post('/books', function(req, res) {
-  var book = req.body;
-  var newBook = [{
-      title: 'AI_1',
-      description: 'Analog Input',
-      price: price
-  }];
-  Books.create(newBook, function(err, books) {
-    if (err) {
-      throw err;
-    }
-    res.json(books);
-    console.log('\nPOST book\n', book);
-  })
-});
-
-//----->>>> GET BOOKS <<<---------
-app.get('/books', function(req, res) {
-  Books.find(function(err, books) {
-    if (err) {
-      throw err;
-    }
-    res.json(books)
-  })
-});
-
-//----->>>> DELETE BOOKS <<<---------
-app.delete('/books/:id', function(req, res) {
-  var query = {_id: req.params.id};
-  Books.remove(query, function(err, deletedBook) {
-    if (err) {
-      throw err;
-    }
-    res.json(deletedBook)
-  })
-});
-
-
-//---->>> UPDATE BOOKS <<<------
-app.put('/books/:_id', function(req, res) {
-  var book = req.body;
-  var query = {_id: req.params._id};
-  console.log("QUERY:\n",query);
-  // if the field doesn't exist $set will set  a new field
-  var update = {
-    '$set': {
-      title: book.title,
-      description: book.description,
-      image: book.image,
-      price: book.price
-      //price: price
-    }
-  };
-
-  // When true returns the updated document
-  var options = {
-    new: true
-  };
-  Books.findOneAndUpdate(query, update, options, function(err, books) {
-    if (err) {
-      throw err;
-    }
-    res.json(books);
-  })
-})
 
 // END APIs
 
@@ -167,7 +102,7 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+/*app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -176,5 +111,5 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
+*/
 module.exports = app;

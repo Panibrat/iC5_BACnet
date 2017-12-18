@@ -1,18 +1,19 @@
 import React from 'react';
 import {Well, Col,  Row} from 'react-bootstrap';
 
-class avItem extends React.Component {
+class AvItem extends React.Component {
+  constructor(props){
+    super(props);
+  }
   render() {
-      console.log(this.props);
+      //console.log('AvItem props', this.props);
     return (
       <Well>
         <Row>
           <Col xs={12}>
-            <p>{this.props.title}</p>
+            <p>{this.props.title} {this.props.value} {this.props.units}</p>
             <p>{this.props.description}</p>
             <p>{this.props.status}</p>
-            <p>{this.props.value}</p>
-            <p>{this.props.units}</p>
           </Col>
         </Row>
       </Well>
@@ -20,4 +21,4 @@ class avItem extends React.Component {
   }
 }
 
-export default avItem;
+export default AvItem;

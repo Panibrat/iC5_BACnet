@@ -25,7 +25,8 @@ for (var i=0; i<10; i++) {
     const newBV = {
         title: 'BV' + i,
         description: '',
-        value: undefined
+        //value: undefined
+        value: false
     };
     BVs.create(newBV, function(err, av) {
         if (err) {

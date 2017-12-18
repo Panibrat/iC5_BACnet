@@ -5,7 +5,8 @@ var AVSchema = mongoose.Schema({
   description: String,
   status: String,
   units: String,
-  value: Number
+  value: Number,
+  readOnly: Boolean
 });
 
 var AVs = mongoose.model('Analog_Values', AVSchema);

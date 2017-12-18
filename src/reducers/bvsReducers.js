@@ -1,9 +1,9 @@
 "use strict"
-export function bvsReducers(state = [], action) {
+export function bvsReducers(bvs = [], action) {      
     switch (action.type) {
-        case "GET_BVS":
-            return [...state, action.payload];
+        case "GET_BVS":                
+            return [...bvs, ...action.payload];
             break;
     }
-    return state
+    return bvs
 }

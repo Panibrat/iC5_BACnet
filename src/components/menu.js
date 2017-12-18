@@ -10,20 +10,20 @@ class Menu extends React.Component{
         <Navbar inverse fixedTop>
             <Navbar.Header>
               <Navbar.Brand>
-                <a href="/">Panibrat Shop</a>
+                <a href="/">iC5</a>
               </Navbar.Brand>
               <Navbar.Toggle />
             </Navbar.Header>
             <Navbar.Collapse>
               <Nav>
-                <NavItem eventKey={1} href="/about">About</NavItem>
-                <NavItem eventKey={2} href="/contacts">Contact Us</NavItem>
+                <NavItem eventKey={1} href="/analog">AV</NavItem>
+                <NavItem eventKey={2} href="/binary">BV</NavItem>
 
               </Nav>
               <Nav pullRight>
                 <NavItem eventKey={1} href="/admin">Admin</NavItem>
                 <NavItem eventKey={2} href="/cart">
-                    You Cart {(this.props.totalQty > 0) ? <Badge className="badge">{this.props.totalQty}</Badge> : null}
+                    You Cart <Badge className="badge">77</Badge>
                 </NavItem>
               </Nav>
             </Navbar.Collapse>
@@ -33,9 +33,4 @@ class Menu extends React.Component{
   }
 }
 
-function mapStateToProps(state){
-  return {
-    totalQty: state.carts.totalQty
-  }
-}
-export default connect(mapStateToProps)(Menu);
+export default Menu;

@@ -1,9 +1,10 @@
 "use strict"
-export function avsReducers(state = [], action) {
+export function avsReducers(avs = [], action) {      
     switch (action.type) {
         case "GET_AVS":
-            return [...state, action.payload];
+        const newAvs = [...avs, ...action.payload];       
+            return newAvs;
             break;
     }
-    return state
+    return avs
 }

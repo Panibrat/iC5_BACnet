@@ -9,16 +9,11 @@ import logger from 'redux-logger';
 
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 
-
 import reducers from './reducers/index';
 
-import {addToCart, deleteCartItem} from './actions/cartActions';
-import {postBooks, deleteBooks, updateBooks} from './actions/booksActions';
-
-import BooksList from './components/pages/booksList';
-import AVsList from './components/pages/avList';
-import BooksForm from './components/pages/booksForm';
-import Cart from './components/pages/cart';
+import AVsList from './components/pages/AvList';
+import BVsList from './components/pages/BvList';
+import AvItem from './components/pages/AvItem';
 import Menu from './components/menu';
 import Footer from './components/footer';
 
@@ -36,12 +31,14 @@ store.subscribe(function() {
 const Routes = (
   <Provider store = {store} >
     <BrowserRouter>
-      <div>
+      <div> 
         <Menu />
           <Switch>
             <Route exact path="/" component={AVsList}/>
-            <Route path="/admin" component={BooksForm}/>
-            <Route path="/cart" component={Cart}/>
+            <Route exact path="/binary" component={BVsList}/>
+            <Route exact path="/analog" component={AVsList}/>
+            <Route path="/admin" component={AVsList}/>
+            <Route path="/cart" component={AVsList}/>
           </Switch>
         <Footer />
       </div>
