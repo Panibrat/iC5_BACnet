@@ -16,3 +16,10 @@ webpack
 ```
 npm start
 ```
+
+##### AV read logic
+1. Read value from device readAVpromise->
+2. Set value to buffer / Compare value with buffer ->
+3. Should we update MongoDB? 
+    yes: Trigger update AVtoMongo -> get confirm from DB -> emmit event for socketIO 'update state' -> client event handler: getAV() -> axios.get('/av') -> dispatch(answer from server) -> re-rendering
+    no: Skip

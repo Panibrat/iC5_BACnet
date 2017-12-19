@@ -10,11 +10,17 @@ var readBV = (client, IP, pointNumber) => {
                 try {
                     const itemValue = value.valueList[0].value;
                     const itemInstance = value.objectId.instance;
-                    resolve({ itemValue, itemInstance });
+                    resolve({ 
+                        title: 'BV' + pointNumber,
+                        value: itemValue
+                        });
                 } catch (error) {
                     console.log('ERRRRROR CATCH: ', error);
                     itemValue = undefined;
-                    resolve(itemValue);
+                    resolve({ 
+                        title: 'BV' + pointNumber,
+                        value: itemValue
+                        });
                 }
                 reject(err);
             });

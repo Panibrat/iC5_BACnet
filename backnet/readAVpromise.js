@@ -10,11 +10,18 @@ var readAV = (client, IP, pointNumber) => {
                 try {
                     const itemValue = value.valueList[0].value.toFixed(1);
                     const itemInstance = value.objectId.instance;
-                    resolve({ itemValue, itemInstance });
+                    resolve({ 
+                        title: 'AV' + pointNumber,
+                        value: itemValue
+                        }
+                    );
                 } catch (error) {
                     console.log('ERRRRROR CATCH: ', error);
                     itemValue = 99;
-                    resolve(itemValue);
+                    resolve({ 
+                        title: 'AV' + pointNumber,
+                        value: itemValue
+                        });
                 }
                 reject(err);
             });
@@ -22,4 +29,3 @@ var readAV = (client, IP, pointNumber) => {
 };
 
 module.exports = readAV;
-

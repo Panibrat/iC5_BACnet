@@ -30,6 +30,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+const state = [];
+
 // APIs
  var mongoose = require('mongoose');
  mongoose.connect('mongodb://localhost:27017/iC5');
@@ -37,29 +39,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //BACnet LOOOP
 var loopBACnet = setInterval(() => {
-    readAV(client, IP, 0).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 1).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 2).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 3).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 4).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 5).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 6).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 7).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 8).then((result) => avToMongo(result, AVs));
-    readAV(client, IP, 9).then((result) => avToMongo(result, AVs));
+     readAV(client, IP, 0).then((result) => avToMongo(result, AVs));
+    // readAV(client, IP, 1).then((result) => avToMongo(result, AVs));
+    // readAV(client, IP, 2).then((result) => avToMongo(result, AVs));
+    // readAV(client, IP, 3).then((result) => avToMongo(result, AVs));
+    // readAV(client, IP, 4).then((result) => avToMongo(result, AVs));
+    // readAV(client, IP, 5).then((result) => avToMongo(result, AVs));
+    // readAV(client, IP, 6).then((result) => avToMongo(result, AVs));
+    // readAV(client, IP, 7).then((result) => avToMongo(result, AVs));
+    // readAV(client, IP, 8).then((result) => avToMongo(result, AVs));
+    // readAV(client, IP, 9).then((result) => avToMongo(result, AVs));
 
-    readBV(client, IP, 0).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 1).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 2).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 3).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 4).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 5).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 6).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 7).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 8).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 9).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 10).then((result) => bvToMongo(result, BVs));
-    readBV(client, IP, 11).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 0).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 1).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 2).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 3).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 4).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 5).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 6).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 7).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 8).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 9).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 10).then((result) => bvToMongo(result, BVs));
+    // readBV(client, IP, 11).then((result) => bvToMongo(result, BVs));
 
 }, 1000);
 
