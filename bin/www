@@ -8,6 +8,8 @@ var app = require('../app');
 var debug = require('debug')('ic5:server');
 var http = require('http');
 
+const socketIO = require('socket.io');
+
 /**
  * Get port from environment and store in Express.
  */
@@ -20,6 +22,32 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+
+
+//SOCKET IO
+var io = socketIO(server);
+
+const dataToSend = {title: 'AV101010', value: 777};
+
+io.on('connection', (client) => {
+  client.emit('newAV', dataToSend);  
+  client.emit('newBV');
+  console.log('New User connected');
+
+
+  client.on('subscribeToData', () => {
+    console.log('GET subscribeToData');         
+  });
+
+});
+
+////////////////////////////////////////////////////////
+
+
+
+
+
 
 /**
  * Listen on provided port, on all network interfaces.

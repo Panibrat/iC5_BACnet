@@ -1,17 +1,20 @@
 //BACnet
-var bacnet = require('bacstack');
+const bacnet = require('bacstack');
 // Initialize BACStack
-var client = new bacnet();
-const IP = '192.168.0.222';
+const client = new bacnet();// use with iC5
+const IP = '192.168.0.222';// use with iC5
 
-// const writeBV = (client, IP, pointNumber, valueToSave) => {
-const readAV = require('./backnet/readAVpromise');
+//const readAV = require('./backnet/readAVpromise'); // use with iC5
+//const readBV = require('./backnet/readBVpromise'); // use with iC5
+const readAV = require('./backnet/readAVfromJSON'); // use without iC5
+const readBV = require('./backnet/readBVfromJSON'); // use without iC5
+
 const writeBV = require('./backnet/writeBVpromise');
-const readBV = require('./backnet/readBVpromise');
 const avToMongo = require('./backnet/AVtoMongo');
 const bvToMongo = require('./backnet/BVtoMongo');
 const AVs = require('./models/AV.js');
 const BVs = require('./models/BV.js');
+
 
 
 var express = require('express');
@@ -30,47 +33,38 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-const state = [];
-
 // APIs
  var mongoose = require('mongoose');
  mongoose.connect('mongodb://localhost:27017/iC5');
 
 
 //BACnet LOOOP
+var buffer = [];
+
 var loopBACnet = setInterval(() => {
-     readAV(client, IP, 0).then((result) => avToMongo(result, AVs));
-    // readAV(client, IP, 1).then((result) => avToMongo(result, AVs));
-    // readAV(client, IP, 2).then((result) => avToMongo(result, AVs));
-    // readAV(client, IP, 3).then((result) => avToMongo(result, AVs));
-    // readAV(client, IP, 4).then((result) => avToMongo(result, AVs));
-    // readAV(client, IP, 5).then((result) => avToMongo(result, AVs));
-    // readAV(client, IP, 6).then((result) => avToMongo(result, AVs));
-    // readAV(client, IP, 7).then((result) => avToMongo(result, AVs));
-    // readAV(client, IP, 8).then((result) => avToMongo(result, AVs));
-    // readAV(client, IP, 9).then((result) => avToMongo(result, AVs));
-
-    // readBV(client, IP, 0).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 1).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 2).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 3).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 4).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 5).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 6).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 7).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 8).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 9).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 10).then((result) => bvToMongo(result, BVs));
-    // readBV(client, IP, 11).then((result) => bvToMongo(result, BVs));
-
+    for(let i=0; i<5; i++) {
+      readAV(client, IP, i)
+      .then((result) => isChangedAV(result))
+      .then((av) => {
+          //console.log(av);
+          avToMongo(av, AVs);
+      })
+      .catch((e) => e );
+  }
+  for(let i=0; i<5; i++) {
+      readBV(client, IP, i)
+      .then((result) => isChangedBV(result))
+      .then((bv) => {bvToMongo(bv, BVs)})
+      .catch((e) => e );
+  }    
+  //console.log('buffer:\n', buffer);
 }, 1000);
 
-//readAV(client, IP, 1);
+
 
 //----->>>> GET AVS <<<---------
 app.get('/av', function(req, res) {
-  console.log('GET AV');
-  
+  //console.log('GET AV');  
     AVs.find(function(err, avs) {
         if (err) {
             throw err;
@@ -81,7 +75,7 @@ app.get('/av', function(req, res) {
 
 //----->>>> GET BVS <<<---------
 app.get('/bv', function(req, res) {
-  console.log('GET BV');
+  //console.log('GET BV');
     BVs.find(function(err, bvs) {
         if (err) {
             throw err;
@@ -90,13 +84,8 @@ app.get('/bv', function(req, res) {
     })
 });
 
-
-
-
-
-
-
-//---->>> UPDATE BOOKS <<<------
+/*
+//---->>> UPDATE BVS <<<------
 app.put('/bv/:_id', function(req, res) {
   var bv = req.body;
   var query = {_id: req.params._id};
@@ -107,11 +96,6 @@ app.put('/bv/:_id', function(req, res) {
     const valueToSave = bv.value;
 
 
-
-
-
-
-
 //NEED TO CONVERT BACnet API save value
 writeBV(client, IP, pointNumber, valueToSave, bacnet)
     .then((res) => {
@@ -120,10 +104,6 @@ writeBV(client, IP, pointNumber, valueToSave, bacnet)
     .catch((e) => {
         console.log('writeBV() ERROR\n', e);
     });
-
-
-
-//
 
   var update = {
     '$set': {
@@ -142,9 +122,8 @@ writeBV(client, IP, pointNumber, valueToSave, bacnet)
   })
 });
 
-// END APIs
 
-
+*/
 
 
 
@@ -175,4 +154,61 @@ app.use(function(req, res, next) {
   res.render('error');
 });
 */
+
+
+
+//BUFFER FUNCTIONS
+function isChangedBV(point) {
+  return new Promise((resolve, reject) => {
+      const index = buffer.findIndex((stored) => {return stored.title == point.title});
+      if(index === -1) {  
+          buffer = [...buffer, {
+              title: point.title,
+              value: point.value
+          }]
+          //console.log('BV update emmit for Socket IO !!!');
+          resolve(point);
+      } else if (buffer[index].value !== point.value ) {
+          buffer[index].value = point.value;
+          //console.log('BV update emmit for Socket IO !!!');
+          resolve(point);
+          }         
+      //reject('BV data not changed!!!');
+      reject();
+  })    
+};
+
+function isChangedAV(point) {
+  return new Promise((resolve, reject) => {
+      const index = buffer.findIndex((stored) => {return stored.title == point.title});
+      if(index === -1) {  
+          buffer = [...buffer, {
+              title: point.title,
+              value: point.value
+          }]
+          //console.log('AV update emmit for Socket IO !!!');
+          resolve(point);
+      } else if (Math.abs(buffer[index].value - point.value ) > 0.5) {
+          buffer[index].value = point.value;
+          //console.log('AV update emmit for Socket IO !!!');
+          
+          resolve(point);
+          }         
+      //reject('AV data not changed!!!');
+      reject();
+  })    
+};
+//////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = app;

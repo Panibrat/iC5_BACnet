@@ -11,7 +11,6 @@ var buffer = [];
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/iC5');
 
-
 setInterval(() => {
     for(let i=0; i<5; i++) {
         readAV('client', 'IP', i)

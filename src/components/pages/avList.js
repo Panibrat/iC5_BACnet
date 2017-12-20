@@ -5,9 +5,13 @@ import {getAVs} from '../../actions/AVsActions';
 import { Grid, Row, Col } from 'react-bootstrap';
 import AvItem from './AvItem';
 
+import { subscribeToData } from '../../../api/socket-client';
+
 export class AVsList extends React.Component {
   componentDidMount() {
-    this.props.getAVs();
+    //this.props.getAVs();
+
+    subscribeToData( this.props.getAVs );
   }
 
   render() {

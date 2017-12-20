@@ -1,9 +1,11 @@
 const fs = require('fs');
+const path = require('path');
+const jsonPath = path.join(__dirname, './jsonDB/AV');
 
-const readAVfromJSON = (client, IP, pointNumber) => {
+const readAVfromJSON = (client, IP, pointNumber) => {   
     return new Promise((resolve, reject) => {
-        const pass = '../jsonDB/AV' + pointNumber + '.json';        
-        const item = JSON.parse(fs.readFileSync(pass, 'utf8'));
+        const pass = jsonPath + pointNumber + '.json';         
+        const item = JSON.parse(fs.readFileSync(pass, 'utf8'));       
         resolve(
             { 
                 title: 'AV' + pointNumber,
