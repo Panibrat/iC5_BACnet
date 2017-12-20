@@ -2,7 +2,7 @@
 export function avsReducers(avs = [], action) {      
     switch (action.type) {
         case "GET_AVS":
-        const newAvs = [...avs, ...action.payload];       
+        const newAvs = [ ...action.payload ];
             return newAvs;
             break;
     }

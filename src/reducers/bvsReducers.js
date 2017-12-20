@@ -2,7 +2,7 @@
 export function bvsReducers(bvs = [], action) {      
     switch (action.type) {
         case "GET_BVS":                
-            return [...bvs, ...action.payload];
+            return [ ...action.payload];
             break;
     }
 

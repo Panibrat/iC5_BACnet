@@ -5,12 +5,18 @@ import {getBVs, toggleBV} from '../../actions/BVsActions';
 import { Grid, Row, Col } from 'react-bootstrap';
 import BvItem from './BvItem';
 
-import { subscribeToData } from '../../../api/socket-client';
+import socketIOClient from "socket.io-client";
+//import { subscribeToData } from '../../../api/socket-client';
 
 export class BVsList extends React.Component {
   componentDidMount() {
     this.props.getBVs();
-    subscribeToData( () => { console.log('BV UPDATE!!!') } );
+    //subscribeToData( () => { console.log('BV UPDATE!!!') } );
+      const socket = socketIOClient();
+      socket.on("newBV", () => {
+          console.log('NEW SOCKET BV!!!');
+          this.props.getBVs()
+      } );
   }
 
   render() {
@@ -42,7 +48,7 @@ export class BVsList extends React.Component {
 
 function mapStateToProps(state){
   return {
-   bvs: state.binary
+   bvs: state.binary.sort((a, b) => a.title > b.title)
   }
 }
 

@@ -4,10 +4,10 @@ const bacnet = require('bacstack');
 const client = new bacnet();// use with iC5
 const IP = '192.168.0.222';// use with iC5
 
-//const readAV = require('./backnet/readAVpromise'); // use with iC5
-//const readBV = require('./backnet/readBVpromise'); // use with iC5
-const readAV = require('./backnet/readAVfromJSON'); // use without iC5
-const readBV = require('./backnet/readBVfromJSON'); // use without iC5
+const readAV = require('./backnet/readAVpromise'); // use with iC5
+const readBV = require('./backnet/readBVpromise'); // use with iC5
+//const readAV = require('./backnet/readAVfromJSON'); // use without iC5
+//const readBV = require('./backnet/readBVfromJSON'); // use without iC5
 
 const writeBV = require('./backnet/writeBVpromise');
 const avToMongo = require('./backnet/AVtoMongo');
@@ -152,7 +152,7 @@ var loopBACnet = setInterval(() => {
       .catch((e) => e );
   }    
   //console.log('buffer:\n', buffer);
-}, 1000);
+}, 50);
 
 
 
@@ -226,7 +226,7 @@ function isChangedAV(point) {
           }]
           //console.log('AV update emmit for Socket IO !!!');
           resolve(point);
-      } else if (Math.abs(buffer[index].value - point.value ) > 0.5) {
+      } else if (Math.abs(buffer[index].value - point.value ) > 0.05) {
           buffer[index].value = point.value;
           //console.log('AV update emmit for Socket IO !!!');
           

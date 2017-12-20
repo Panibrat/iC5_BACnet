@@ -12,10 +12,10 @@ import socketIOClient from "socket.io-client";
 export class AVsList extends React.Component {
   
   componentDidMount() {
-    //this.props.getAVs();
+    this.props.getAVs();
     const socket = socketIOClient();
     socket.on("newAV", () => {
-      console.log('NEW SOCKET!!!');      
+      console.log('NEW SOCKET AV!!!');
       this.props.getAVs()
     } );
   }
@@ -48,7 +48,7 @@ export class AVsList extends React.Component {
 
 function mapStateToProps(state){
   return {
-   avs: state.analog
+   avs: state.analog.sort((a, b) => a.title > b.title)
   }
 }
 
