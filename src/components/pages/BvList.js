@@ -5,9 +5,12 @@ import {getBVs, toggleBV} from '../../actions/BVsActions';
 import { Grid, Row, Col } from 'react-bootstrap';
 import BvItem from './BvItem';
 
+import { subscribeToData } from '../../../api/socket-client';
+
 export class BVsList extends React.Component {
   componentDidMount() {
     this.props.getBVs();
+    subscribeToData( () => { console.log('BV UPDATE!!!') } );
   }
 
   render() {

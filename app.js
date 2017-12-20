@@ -16,13 +16,13 @@ const AVs = require('./models/AV.js');
 const BVs = require('./models/BV.js');
 
 
-
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+const socketIO = require('socket.io');
 
 var app = express();
 
@@ -37,6 +37,99 @@ app.use(express.static(path.join(__dirname, 'public')));
  var mongoose = require('mongoose');
  mongoose.connect('mongodb://localhost:27017/iC5');
 
+///WWW
+var debug = require('debug')('ic5:server');
+var http = require('http');
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+
+//SOCKET IO
+const io = socketIO(server);
+
+const dataToSend = {title: 'AV101010', value: 777};
+
+io.on('connection', (socketClient) => {
+  //socketClient.emit('newAV', dataToSend);  
+  //socketClient.emit('newBV');
+  console.log('New User connected');
+});
+
+const clientsIO = io.sockets.clients();
+
+
+server.listen(port);
+console.log('Server is runnnning on port ', port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+///END WWW
 
 //BACnet LOOOP
 var buffer = [];
@@ -47,14 +140,15 @@ var loopBACnet = setInterval(() => {
       .then((result) => isChangedAV(result))
       .then((av) => {
           //console.log(av);
-          avToMongo(av, AVs);
+          //console.log('ioooooooooooooooooooooo', io);
+          avToMongo(av, AVs, clientsIO);
       })
       .catch((e) => e );
   }
   for(let i=0; i<5; i++) {
       readBV(client, IP, i)
       .then((result) => isChangedBV(result))
-      .then((bv) => {bvToMongo(bv, BVs)})
+      .then((bv) => {bvToMongo(bv, BVs, clientsIO)})
       .catch((e) => e );
   }    
   //console.log('buffer:\n', buffer);
@@ -84,50 +178,6 @@ app.get('/bv', function(req, res) {
     })
 });
 
-/*
-//---->>> UPDATE BVS <<<------
-app.put('/bv/:_id', function(req, res) {
-  var bv = req.body;
-  var query = {_id: req.params._id};
-  bv._id = req.params._id;
-  //console.log("QUERY:\n",query);
-  // if the field doesn't exist $set will set  a new field
-    const pointNumber = 10;
-    const valueToSave = bv.value;
-
-
-//NEED TO CONVERT BACnet API save value
-writeBV(client, IP, pointNumber, valueToSave, bacnet)
-    .then((res) => {
-        console.log('writeBV(client, IP, pointNumber, valueToSave, bacnet)\n',  res);
-    })
-    .catch((e) => {
-        console.log('writeBV() ERROR\n', e);
-    });
-
-  var update = {
-    '$set': {
-      value: bv.value,
-    }
-  };
-  // When true returns the updated document
-  var options = {
-    new: true
-  };
-  BVs.findOneAndUpdate(query, update, options, function(err, books) {
-    if (err) {
-      throw err;
-    }
-    res.json(bv);
-  })
-});
-
-
-*/
-
-
-
-
 // END APIs
 
 
@@ -142,18 +192,6 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
-// error handler
-/*app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-*/
 
 
 
@@ -199,16 +237,3 @@ function isChangedAV(point) {
   })    
 };
 //////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports = app;

@@ -1,5 +1,5 @@
 //---->>> UPDATE AVS <<<------
-const bvToMongo = function (bv, model) {
+const bvToMongo = function (bv, model, clientsIO) {
     var query = { title: bv.title };
     var update = {
         '$set': {
@@ -15,8 +15,9 @@ const bvToMongo = function (bv, model) {
             throw err;
         }
        // console.log(` ${query.title} updeted to value: ${bv.itemValue}`)
-        console.log(` mongo Responce: ${res}`)
+        //console.log(` mongo Responce: ${res}`)
         console.log('BV update emmit for Socket IO !!!');
+        clientsIO.emit('newBV');
     })
 };
 

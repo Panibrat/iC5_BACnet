@@ -5,13 +5,19 @@ import {getAVs} from '../../actions/AVsActions';
 import { Grid, Row, Col } from 'react-bootstrap';
 import AvItem from './AvItem';
 
-import { subscribeToData } from '../../../api/socket-client';
+//import { subscribeToData } from '../../../api/socket-client';
+import socketIOClient from "socket.io-client";
+
 
 export class AVsList extends React.Component {
+  
   componentDidMount() {
     //this.props.getAVs();
-
-    subscribeToData( this.props.getAVs );
+    const socket = socketIOClient();
+    socket.on("newAV", () => {
+      console.log('NEW SOCKET!!!');      
+      this.props.getAVs()
+    } );
   }
 
   render() {

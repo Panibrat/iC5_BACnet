@@ -18,6 +18,9 @@ import AvItem from './components/pages/AvItem';
 import Menu from './components/menu';
 import Footer from './components/footer';
 
+import {getAVs} from './actions/AVsActions';
+
+
 
 const middeleware = applyMiddleware(
     thunk,
@@ -28,6 +31,10 @@ const store = createStore(reducers, middeleware);
 store.subscribe(function() {
   //console.log('current state is: ', store.getState());
 });
+
+
+
+//store.dispatch(getAVs());
 
 const Routes = (
   <Provider store = {store} >

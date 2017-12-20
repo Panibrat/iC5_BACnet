@@ -22246,7 +22246,9 @@ var _AvItem = __webpack_require__(252);
 
 var _AvItem2 = _interopRequireDefault(_AvItem);
 
-var _socketClient = __webpack_require__(580);
+var _socket = __webpack_require__(581);
+
+var _socket2 = _interopRequireDefault(_socket);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22255,6 +22257,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+//import { subscribeToData } from '../../../api/socket-client';
+
 
 var AVsList = exports.AVsList = function (_React$Component) {
   _inherits(AVsList, _React$Component);
@@ -22268,9 +22273,14 @@ var AVsList = exports.AVsList = function (_React$Component) {
   _createClass(AVsList, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      //this.props.getAVs();
+      var _this2 = this;
 
-      (0, _socketClient.subscribeToData)(this.props.getAVs);
+      //this.props.getAVs();
+      var socket = (0, _socket2.default)();
+      socket.on("newAV", function () {
+        console.log('NEW SOCKET!!!');
+        _this2.props.getAVs();
+      });
     }
   }, {
     key: 'render',
@@ -24304,6 +24314,8 @@ var _BvItem = __webpack_require__(603);
 
 var _BvItem2 = _interopRequireDefault(_BvItem);
 
+var _socketClient = __webpack_require__(580);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -24325,6 +24337,9 @@ var BVsList = exports.BVsList = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.props.getBVs();
+      (0, _socketClient.subscribeToData)(function () {
+        console.log('BV UPDATE!!!');
+      });
     }
   }, {
     key: 'render',
@@ -24494,6 +24509,8 @@ var _footer = __webpack_require__(605);
 
 var _footer2 = _interopRequireDefault(_footer);
 
+var _AVsActions = __webpack_require__(561);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var middeleware = (0, _redux.applyMiddleware)(_reduxThunk2.default, _reduxLogger2.default
@@ -24503,6 +24520,8 @@ var store = (0, _redux.createStore)(_index2.default, middeleware);
 store.subscribe(function () {
   //console.log('current state is: ', store.getState());
 });
+
+//store.dispatch(getAVs());
 
 var Routes = _react2.default.createElement(
   _reactRedux.Provider,
@@ -53085,16 +53104,19 @@ var _socket2 = _interopRequireDefault(_socket);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var socket = (0, _socket2.default)('http://localhost:3000');
+var socket = (0, _socket2.default)();
 
 function subscribeToData(cb) {
   socket.on('newAV', function (data) {
-    console.log('newAV:::', data);
+    //console.log('newAV:::', data);
+    cb();
+  });
+  socket.on('newBV', function () {
+    //console.log('newBV:::');
     cb();
   });
   socket.emit('subscribeToData');
 }
-//export { subscribeToData };
 
 /***/ }),
 /* 581 */
