@@ -11,7 +11,7 @@ const writeBV = (client, IP, bv, bacnet) => {
             16, // priority 16
             [
                 {
-                    tag: bacnet.enum.BacnetApplicationTags.BACNET_APPLICATION_TAG_ENUMERATED,
+                    type: bacnet.enum.BacnetApplicationTags.BACNET_APPLICATION_TAG_ENUMERATED,
                     value: valueToSave} ], // value to write!!!!
             function(err, value) { // NOTE: type changed to correct value
                

@@ -5,7 +5,7 @@ var bacnet = require('bacstack');
 // Initialize BACStack
 var client = new bacnet();
 
-var sHumFor = 77;
+var sHumFor = 57;
 
 //AV WRITE
 client.writeProperty(
@@ -15,16 +15,16 @@ client.writeProperty(
     85, // propertyId???????????
     16, // priority 16
     [
-    {
-        tag: bacnet.enum.BacnetApplicationTags.BACNET_APPLICATION_TAG_REAL, // constant?????????
-        value: sHumFor}                                                     // value to write!!!!
-], function(err, value) { // NOTE: `type` changed to `tag`
-    //console.log('writeProperty: ', value);
-    if (err) {
-        console.log('writePropertyError: ', err);
-    } else {
-        console.log('writed value success: ',value );
-        console.timeEnd('startRequest');
-    }
-});
+        {
+            type: bacnet.enum.BacnetApplicationTags.BACNET_APPLICATION_TAG_REAL, // constant?????????
+            value: sHumFor}                                                     // value to write!!!!
+    ], function(err, value) { // NOTE: `type` changed to `tag`
+        //console.log('writeProperty: ', value);
+        if (err) {
+            console.log('writePropertyError: ', err);
+        } else {
+            console.log('writed value success: ',value );
+            console.timeEnd('startRequest');
+        }
+    });
 //client.close();

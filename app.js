@@ -4,15 +4,15 @@ const bacnet = require('bacstack');
 const client = new bacnet();
 const IP = '192.168.0.222';
 
-//const readAV = require('./backnet/readAVpromise'); // use with iC5
-//const readBV = require('./backnet/readBVpromise'); // use with iC5
-//const writeBV = require('./backnet/writeBVpromise'); // use with iC5
-//const writeAV = require('./backnet/writeAVpromise'); // use with iC5
+const readAV = require('./backnet/readAVpromise'); // use with iC5
+const readBV = require('./backnet/readBVpromise'); // use with iC5
+const writeBV = require('./backnet/writeBVpromise'); // use with iC5
+const writeAV = require('./backnet/writeAVpromise'); // use with iC5
 
-const readAV = require('./backnet/readAVfromJSON'); // use without iC5
-const readBV = require('./backnet/readBVfromJSON'); // use without iC5
-const writeBV = require('./backnet/writeBVtoJSON'); // use without iC5
-const writeAV = require('./backnet/writeAVtoJSON'); // use without iC5
+//const readAV = require('./backnet/readAVfromJSON'); // use without iC5
+//const readBV = require('./backnet/readBVfromJSON'); // use without iC5
+//const writeBV = require('./backnet/writeBVtoJSON'); // use without iC5
+//const writeAV = require('./backnet/writeAVtoJSON'); // use without iC5
 
 
 const avToMongo = require('./backnet/AVtoMongo');
@@ -155,7 +155,7 @@ var loopBACnet = setInterval(() => {
       .catch((e) => e );
   }    
   //console.log('buffer:\n', buffer);
-}, 50);
+}, 500);
 
 
 
