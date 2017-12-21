@@ -8,11 +8,11 @@ export class MainList extends React.Component {
     return (
       <Grid style={{marginTop:'50px'}}>
         <Row>
-          <h3> Analog Values </h3>
+          {/* <h3> Analog Values </h3> */}
           <AvList />
         </Row>
         <Row>
-          <h3> Binary Values </h3>
+          {/* <h3> Binary Values </h3> */}
           <BvList />
         </Row>
       </Grid>

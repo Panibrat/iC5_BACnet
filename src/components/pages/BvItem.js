@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Well, Col, Row, Button} from 'react-bootstrap';
 
-import {toggleBV} from '../../actions/BVsActions';
+import {setBV} from '../../actions/BVsActions';
 
 class BvItem extends React.Component {
   constructor(props){
@@ -11,11 +11,13 @@ class BvItem extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
   handleClick() {    
+    //TOGGLE BV
     const data = {
       _id: this.props._id,
+      title: this.props.title,
       value: !this.props.value
     };
-    this.props.toggleBV(data);
+    this.props.setBV(data);
   }
 
   render() {     
@@ -42,7 +44,7 @@ class BvItem extends React.Component {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    toggleBV: toggleBV
+    setBV: setBV
   }, dispatch)
 }
 

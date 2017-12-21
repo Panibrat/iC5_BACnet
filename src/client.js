@@ -32,10 +32,6 @@ store.subscribe(function() {
   //console.log('current state is: ', store.getState());
 });
 
-
-
-//store.dispatch(getAVs());
-
 const Routes = (
   <Provider store = {store} >
     <BrowserRouter>

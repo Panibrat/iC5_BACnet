@@ -1,5 +1,8 @@
-const writeBV = (client, IP, pointNumber, valueToSave, bacnet) => {
+const writeBV = (client, IP, bv, bacnet) => {
     return new Promise((resolve, reject) => {
+
+        const pointNumber = parseInt(bv.title.substring(2));
+        const valueToSave = bv.value;
         client.writeProperty(
             IP, //IP device
             5,  //5 = Binary Value
@@ -11,8 +14,14 @@ const writeBV = (client, IP, pointNumber, valueToSave, bacnet) => {
                     tag: bacnet.enum.BacnetApplicationTags.BACNET_APPLICATION_TAG_ENUMERATED,
                     value: valueToSave} ], // value to write!!!!
             function(err, value) { // NOTE: type changed to correct value
-                console.log('writeProperty: ', value);
-                if(err) { console.log('writePropertyError: ', err); }
+               
+                if(err) { 
+                    console.log('writePropertyError: ', err); 
+                    reject(err);
+                } else {
+                    console.log('writeProperty: ', value);    
+                    resolve(bv);  
+                }
             });
 
     });

@@ -1,15 +1,18 @@
 //BACnet
 const bacnet = require('bacstack');
 // Initialize BACStack
-const client = new bacnet();// use with iC5
-const IP = '192.168.0.222';// use with iC5
+const client = new bacnet();
+const IP = '192.168.0.222';
 
-const readAV = require('./backnet/readAVpromise'); // use with iC5
-const readBV = require('./backnet/readBVpromise'); // use with iC5
-//const readAV = require('./backnet/readAVfromJSON'); // use without iC5
-//const readBV = require('./backnet/readBVfromJSON'); // use without iC5
+//const readAV = require('./backnet/readAVpromise'); // use with iC5
+//const readBV = require('./backnet/readBVpromise'); // use with iC5
+//const writeBV = require('./backnet/writeBVpromise'); // use with iC5
 
-const writeBV = require('./backnet/writeBVpromise');
+const readAV = require('./backnet/readAVfromJSON'); // use without iC5
+const readBV = require('./backnet/readBVfromJSON'); // use without iC5
+const writeBV = require('./backnet/writeBVtoJSON'); // use without iC5
+
+
 const avToMongo = require('./backnet/AVtoMongo');
 const bvToMongo = require('./backnet/BVtoMongo');
 const AVs = require('./models/AV.js');
@@ -135,17 +138,15 @@ function onListening() {
 var buffer = [];
 
 var loopBACnet = setInterval(() => {
-    for(let i=0; i<5; i++) {
+    for(let i=0; i<10; i++) {
       readAV(client, IP, i)
       .then((result) => isChangedAV(result))
       .then((av) => {
-          //console.log(av);
-          //console.log('ioooooooooooooooooooooo', io);
           avToMongo(av, AVs, clientsIO);
       })
       .catch((e) => e );
   }
-  for(let i=0; i<5; i++) {
+  for(let i=0; i<10; i++) {
       readBV(client, IP, i)
       .then((result) => isChangedBV(result))
       .then((bv) => {bvToMongo(bv, BVs, clientsIO)})
@@ -177,6 +178,22 @@ app.get('/bv', function(req, res) {
         res.json(bvs)
     })
 });
+
+//---->>> UPDATE BV <<<------
+app.put('/bv/:_id', function(req, res) {
+  var bv = req.body;  
+  console.log("QUERY:\n", bv);
+  // if the field doesn't exist $set will set  a new field
+  writeBV(client, IP, bv, bacnet)
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((e)=>{
+    console.log('Error when writing BV to Controller', e);    
+  }); 
+
+})
+
 
 // END APIs
 

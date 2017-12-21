@@ -24578,7 +24578,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getBVs = getBVs;
-exports.toggleBV = toggleBV;
+exports.setBV = setBV;
 
 var _axios = __webpack_require__(247);
 
@@ -24604,7 +24604,7 @@ function getBVs() {
   };
 }
 
-function toggleBV(bv) {
+function setBV(bv) {
   return function (dispatch) {
     console.log('BV:', bv);
 
@@ -24613,14 +24613,14 @@ function toggleBV(bv) {
     _axios2.default.put('/bv/' + _id, bv).then(function (responce) {
       var bvs = responce.data;
       dispatch({
-        type: "TOGGLE_BV",
+        type: "SET_BV",
         payload: bvs
       });
     }).catch(function (err) {
-      console.log("\nGET responce ERROR\n", err);
+      console.log("\nSET responce ERROR\n", err);
       dispatch({
-        type: "GET_BVS_REJECTED",
-        payload: "there was an error while getting binary values"
+        type: "SET_BVS_REJECTED",
+        payload: "there was an error while setting binary values"
       });
     });
   };
@@ -24673,11 +24673,11 @@ var _AvItem = __webpack_require__(253);
 
 var _AvItem2 = _interopRequireDefault(_AvItem);
 
-var _menu = __webpack_require__(604);
+var _menu = __webpack_require__(603);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _footer = __webpack_require__(605);
+var _footer = __webpack_require__(604);
 
 var _footer2 = _interopRequireDefault(_footer);
 
@@ -24692,8 +24692,6 @@ var store = (0, _redux.createStore)(_index2.default, middeleware);
 store.subscribe(function () {
   //console.log('current state is: ', store.getState());
 });
-
-//store.dispatch(getAVs());
 
 var Routes = _react2.default.createElement(
   _reactRedux.Provider,
@@ -40960,7 +40958,7 @@ function bvsReducers() {
     }
 
     switch (action.type) {
-        case "TOGGLE_BV":
+        case "SET_BV":
             var newBVs = bvs.map(function (bv) {
                 if (bv._id == action.payload._id) {
                     bv.value = action.payload.value;
@@ -41029,21 +41027,11 @@ var MainList = exports.MainList = function (_React$Component) {
         _react2.default.createElement(
           _reactBootstrap.Row,
           null,
-          _react2.default.createElement(
-            'h3',
-            null,
-            ' Analog Values '
-          ),
           _react2.default.createElement(_AvList2.default, null)
         ),
         _react2.default.createElement(
           _reactBootstrap.Row,
           null,
-          _react2.default.createElement(
-            'h3',
-            null,
-            ' Binary Values '
-          ),
           _react2.default.createElement(_BvList2.default, null)
         )
       );
@@ -56252,11 +56240,13 @@ var BvItem = function (_React$Component) {
   _createClass(BvItem, [{
     key: 'handleClick',
     value: function handleClick() {
+      //TOGGLE BV
       var data = {
         _id: this.props._id,
+        title: this.props.title,
         value: !this.props.value
       };
-      this.props.toggleBV(data);
+      this.props.setBV(data);
     }
   }, {
     key: 'render',
@@ -56303,15 +56293,14 @@ var BvItem = function (_React$Component) {
 
 function mapDispatchToProps(dispatch) {
   return (0, _redux.bindActionCreators)({
-    toggleBV: _BVsActions.toggleBV
+    setBV: _BVsActions.setBV
   }, dispatch);
 }
 
 exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(BvItem);
 
 /***/ }),
-/* 603 */,
-/* 604 */
+/* 603 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56419,7 +56408,7 @@ var Menu = function (_React$Component) {
 exports.default = Menu;
 
 /***/ }),
-/* 605 */
+/* 604 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

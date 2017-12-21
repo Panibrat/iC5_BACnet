@@ -21,7 +21,7 @@ export function getBVs() {
   }
 }
 
-export function toggleBV(bv) {   
+export function setBV(bv) {   
   return function(dispatch){  
     console.log('BV:', bv);
      
@@ -31,15 +31,15 @@ export function toggleBV(bv) {
     .then((responce) => {
       var bvs = responce.data;      
       dispatch({
-        type:"TOGGLE_BV",
+        type:"SET_BV",
         payload: bvs
       })
     })
     .catch((err) => {
-      console.log("\nGET responce ERROR\n", err);
+      console.log("\nSET responce ERROR\n", err);
       dispatch({
-        type:"GET_BVS_REJECTED",
-        payload:"there was an error while getting binary values"        
+        type:"SET_BVS_REJECTED",
+        payload:"there was an error while setting binary values"        
       })
     })
   }

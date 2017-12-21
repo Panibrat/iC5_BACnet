@@ -7,7 +7,7 @@ export function bvsReducers(bvs = [], action) {
     }
 
     switch (action.type) {
-        case "TOGGLE_BV": 
+        case "SET_BV": 
         const newBVs = bvs.map((bv) => {
             if (bv._id == action.payload._id ) {
                 bv.value = action.payload.value;
