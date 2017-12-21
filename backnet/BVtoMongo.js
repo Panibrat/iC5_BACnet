@@ -16,7 +16,7 @@ const bvToMongo = function (bv, model, clientsIO) {
         }
        // console.log(` ${query.title} updeted to value: ${bv.itemValue}`)
         //console.log(` mongo Responce: ${res}`)
-        console.log('BV update emmit for Socket IO !!!');
+        //console.log('BV update emmit for Socket IO !!!');
         clientsIO.emit('newBV');
     })
 };

@@ -16,7 +16,7 @@ const avToMongo = function (av, model, clientsIO) {
         }
         //console.log(` ${query.title} updeted to value: ${av.itemValue}`)        
         //console.log(` mongo Responce: ${res}`)
-        console.log('AV update emmit for Socket IO !!!');
+        //console.log('AV update emmit for Socket IO !!!');
         clientsIO.emit('newAV');
         
     })
