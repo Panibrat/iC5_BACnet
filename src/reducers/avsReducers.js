@@ -6,5 +6,18 @@ export function avsReducers(avs = [], action) {
             return newAvs;
             break;
     }
+    switch (action.type) {
+        case "SET_AV": 
+        const newAVs = avs.map((av) => {
+            if (av._id == action.payload._id ) {
+                av.value = action.payload.value;
+                return av;
+            }
+            return av;
+        });               
+            return newAVs;
+            break;
+    }
+
     return avs
 }

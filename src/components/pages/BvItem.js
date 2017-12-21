@@ -26,14 +26,18 @@ class BvItem extends React.Component {
         <Row>
           <Col xs={12}>
             <p>{this.props.title} { (this.props.value) ? 'ON' : 'OFF' } </p>
-            <p>{this.props.description}</p>    
-            <Button 
-              onClick={this.handleClick} 
-              bsStyle={ (this.props.value) ? 'danger' : 'primary' }
-              bsSize="small"
-            >
-                { (this.props.value) ? 'OFF' : 'ON' }
-            </Button>       
+            <p>{this.props.description}</p> 
+             {(this.props.readOnly) || 
+                <Button 
+                onClick={this.handleClick} 
+                bsStyle={ (this.props.value) ? 'danger' : 'primary' }
+                bsSize="small"
+              >
+                  { (this.props.value) ? 'OFF' : 'ON' }
+              </Button>
+            }           
+             
+                  
           </Col>
         </Row>
       </Well>

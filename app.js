@@ -7,10 +7,12 @@ const IP = '192.168.0.222';
 //const readAV = require('./backnet/readAVpromise'); // use with iC5
 //const readBV = require('./backnet/readBVpromise'); // use with iC5
 //const writeBV = require('./backnet/writeBVpromise'); // use with iC5
+//const writeAV = require('./backnet/writeAVpromise'); // use with iC5
 
 const readAV = require('./backnet/readAVfromJSON'); // use without iC5
 const readBV = require('./backnet/readBVfromJSON'); // use without iC5
 const writeBV = require('./backnet/writeBVtoJSON'); // use without iC5
+const writeAV = require('./backnet/writeAVtoJSON'); // use without iC5
 
 
 const avToMongo = require('./backnet/AVtoMongo');
@@ -146,7 +148,7 @@ var loopBACnet = setInterval(() => {
       })
       .catch((e) => e );
   }
-  for(let i=0; i<10; i++) {
+  for(let i=0; i<12; i++) {
       readBV(client, IP, i)
       .then((result) => isChangedBV(result))
       .then((bv) => {bvToMongo(bv, BVs, clientsIO)})
@@ -182,14 +184,29 @@ app.get('/bv', function(req, res) {
 //---->>> UPDATE BV <<<------
 app.put('/bv/:_id', function(req, res) {
   var bv = req.body;  
-  console.log("QUERY:\n", bv);
-  // if the field doesn't exist $set will set  a new field
+  console.log("BV QUERY:\n", bv);
+  
   writeBV(client, IP, bv, bacnet)
   .then((result) => {
     res.json(result);
   })
   .catch((e)=>{
     console.log('Error when writing BV to Controller', e);    
+  }); 
+
+})
+
+//---->>> UPDATE AV <<<------
+app.put('/av/:_id', function(req, res) {
+  var av = req.body;  
+  console.log("AV QUERY:\n", av);
+  
+  writeAV(client, IP, av, bacnet)
+  .then((result) => {
+    res.json(result);
+  })
+  .catch((e)=>{
+    console.log('Error when writing AV to Controller', e);    
   }); 
 
 })

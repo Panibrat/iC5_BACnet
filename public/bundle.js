@@ -22290,11 +22290,13 @@ var AVsList = exports.AVsList = function (_React$Component) {
           _reactBootstrap.Col,
           { xs: 12, sm: 6, md: 4, key: AV._id },
           _react2.default.createElement(_AvItem2.default, {
+            _id: AV._id,
             title: AV.title,
             description: AV.description,
             status: AV.status,
             value: AV.value,
-            units: AV.units
+            units: AV.units,
+            readOnly: AV.readOnly
           })
         );
       });
@@ -22346,7 +22348,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getAVs = getAVs;
-exports.getBVs = getBVs;
+exports.setAV = setAV;
 
 var _axios = __webpack_require__(247);
 
@@ -22374,21 +22376,23 @@ function getAVs() {
   };
 }
 
-function getBVs() {
+function setAV(av) {
   return function (dispatch) {
-    _axios2.default.get('/bv').then(function (responce) {
-      var bvs = responce.data;
-      //console.log("\nGET responce\n", books);
+    console.log('AV:', av);
+
+    var _id = av._id;
+
+    _axios2.default.put('/av/' + _id, av).then(function (responce) {
+      var avs = responce.data;
       dispatch({
-        type: "GET_BVS",
-        payload: bvs
+        type: "SET_AV",
+        payload: avs
       });
     }).catch(function (err) {
-      console.log("\nGET responce ERROR\n", err);
+      console.log("\nAV SET responce ERROR\n", err);
       dispatch({
-        type: "GET_BVS_REJECTED",
-        payload: "there was an error while getting binary values"
-        //payload:err
+        type: "SET_AVS_REJECTED",
+        payload: "there was an error while setting analog values"
       });
     });
   };
@@ -22686,7 +22690,13 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRedux = __webpack_require__(62);
+
+var _redux = __webpack_require__(63);
+
 var _reactBootstrap = __webpack_require__(48);
+
+var _AVsActions = __webpack_require__(246);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22702,10 +22712,56 @@ var AvItem = function (_React$Component) {
   function AvItem(props) {
     _classCallCheck(this, AvItem);
 
-    return _possibleConstructorReturn(this, (AvItem.__proto__ || Object.getPrototypeOf(AvItem)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (AvItem.__proto__ || Object.getPrototypeOf(AvItem)).call(this, props));
+
+    _this.handleClick = _this.handleClick.bind(_this);
+    _this.handlePlusClick = _this.handlePlusClick.bind(_this);
+    _this.handleMinusClick = _this.handleMinusClick.bind(_this);
+
+    _this.state = {
+      //set: (this.props.value).toFixed(0),
+      //Number(this.props.value.toFixed(0))
+
+      set: Number(_this.props.value.toFixed(0)),
+      showProps: true
+    };
+    return _this;
   }
 
   _createClass(AvItem, [{
+    key: 'handlePlusClick',
+    value: function handlePlusClick() {
+      this.setState({
+        set: this.state.set + 0.5,
+        showProps: false
+      });
+
+      console.log('this.state.set', this.state.set);
+    }
+  }, {
+    key: 'handleMinusClick',
+    value: function handleMinusClick() {
+      this.setState({
+        set: this.state.set - 0.5,
+        showProps: false
+      });
+
+      console.log('this.state.set', this.state.set);
+    }
+  }, {
+    key: 'handleClick',
+    value: function handleClick() {
+      var data = {
+        _id: this.props._id,
+        title: this.props.title,
+        value: this.state.set
+      };
+      this.props.setAV(data);
+      this.setState({
+        showProps: true
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       //console.log('AvItem props', this.props);
@@ -22723,7 +22779,11 @@ var AvItem = function (_React$Component) {
               null,
               this.props.title,
               ' ',
-              this.props.value,
+              _react2.default.createElement(
+                'b',
+                null,
+                this.state.showProps ? this.props.value.toPrecision(3) : this.state.set.toPrecision(3)
+              ),
               ' ',
               this.props.units
             ),
@@ -22731,11 +22791,49 @@ var AvItem = function (_React$Component) {
               'p',
               null,
               this.props.description
-            ),
+            )
+          )
+        ),
+        this.props.readOnly || _react2.default.createElement(
+          _reactBootstrap.Row,
+          null,
+          _react2.default.createElement(
+            _reactBootstrap.Col,
+            { xs: 3 },
             _react2.default.createElement(
-              'p',
-              null,
-              this.props.status
+              _reactBootstrap.Button,
+              {
+                onClick: this.handleMinusClick,
+                bsStyle: 'info',
+                bsSize: 'small'
+              },
+              '-'
+            )
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Col,
+            { xs: 3 },
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              {
+                onClick: this.handlePlusClick,
+                bsStyle: 'warning',
+                bsSize: 'small'
+              },
+              '+'
+            )
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Col,
+            { xs: 6 },
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              {
+                onClick: this.handleClick,
+                bsStyle: 'success',
+                bsSize: 'small'
+              },
+              'SET'
             )
           )
         )
@@ -22746,7 +22844,13 @@ var AvItem = function (_React$Component) {
   return AvItem;
 }(_react2.default.Component);
 
-exports.default = AvItem;
+function mapDispatchToProps(dispatch) {
+  return (0, _redux.bindActionCreators)({
+    setAV: _AVsActions.setAV
+  }, dispatch);
+}
+
+exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(AvItem);
 
 /***/ }),
 /* 254 */
@@ -24524,7 +24628,8 @@ var BVsList = exports.BVsList = function (_React$Component) {
             title: BV.title,
             description: BV.description,
             value: BV.value,
-            _id: BV._id
+            _id: BV._id,
+            readOnly: BV.readOnly
           })
         );
       });
@@ -24551,9 +24656,8 @@ var BVsList = exports.BVsList = function (_React$Component) {
 
 function mapStateToProps(state) {
   return {
-    bvs: state.binary.sort(function (a, b) {
-      return a.title > b.title;
-    })
+    // bvs: state.binary.sort((a, b) => a.title > b.title)
+    bvs: state.binary
   };
 }
 
@@ -24607,7 +24711,6 @@ function getBVs() {
 function setBV(bv) {
   return function (dispatch) {
     console.log('BV:', bv);
-
     var _id = bv._id;
 
     _axios2.default.put('/bv/' + _id, bv).then(function (responce) {
@@ -40930,6 +41033,19 @@ function avsReducers() {
             return newAvs;
             break;
     }
+    switch (action.type) {
+        case "SET_AV":
+            var newAVs = avs.map(function (av) {
+                if (av._id == action.payload._id) {
+                    av.value = action.payload.value;
+                    return av;
+                }
+                return av;
+            });
+            return newAVs;
+            break;
+    }
+
     return avs;
 }
 
@@ -56273,7 +56389,7 @@ var BvItem = function (_React$Component) {
               null,
               this.props.description
             ),
-            _react2.default.createElement(
+            this.props.readOnly || _react2.default.createElement(
               _reactBootstrap.Button,
               {
                 onClick: this.handleClick,
@@ -56388,7 +56504,7 @@ var Menu = function (_React$Component) {
               _react2.default.createElement(
                 _reactBootstrap.NavItem,
                 { eventKey: 2, href: '/cart' },
-                'You Cart ',
+                'Alarms ',
                 _react2.default.createElement(
                   _reactBootstrap.Badge,
                   { className: 'badge' },

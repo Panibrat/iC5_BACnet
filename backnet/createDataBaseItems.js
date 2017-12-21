@@ -10,6 +10,7 @@ for (var i=0; i<10; i++) {
         description: '',
         status: 'norm',
         units: 'deg C',
+        readOnly: false,
         value: 99
     };
     AVs.create(newAV, function(err, av) {
@@ -25,7 +26,7 @@ for (var i=0; i<12; i++) {
     const newBV = {
         title: 'BV' + i,
         description: '',
-        //value: undefined
+        readOnly: false,
         value: false
     };
     BVs.create(newBV, function(err, av) {
@@ -34,5 +35,7 @@ for (var i=0; i<12; i++) {
             throw err;
         }
         console.log('\nSAVE BV\n', av);
+        mongoose.connection.close();
     });
 }
+

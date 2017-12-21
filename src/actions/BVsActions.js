@@ -23,8 +23,7 @@ export function getBVs() {
 
 export function setBV(bv) {   
   return function(dispatch){  
-    console.log('BV:', bv);
-     
+    console.log('BV:', bv);     
     const _id = bv._id;
 
     axios.put('/bv/' + _id, bv)

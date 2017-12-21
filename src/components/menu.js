@@ -23,7 +23,7 @@ class Menu extends React.Component{
               <Nav pullRight>
                 <NavItem eventKey={1} href="/admin">Admin</NavItem>
                 <NavItem eventKey={2} href="/cart">
-                    You Cart <Badge className="badge">77</Badge>
+                    Alarms <Badge className="badge">77</Badge>
                 </NavItem>
               </Nav>
             </Navbar.Collapse>

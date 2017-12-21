@@ -23,23 +23,25 @@ export function getAVs() {
   }
 }
 
-export function getBVs() {
-  return function(dispatch){
-    axios.get('/bv')
+export function setAV(av) {   
+  return function(dispatch){  
+    console.log('AV:', av);
+     
+    const _id = av._id;
+
+    axios.put('/av/' + _id, av)
     .then((responce) => {
-      var bvs = responce.data;
-      //console.log("\nGET responce\n", books);
+      var avs = responce.data;      
       dispatch({
-        type:"GET_BVS",
-        payload: bvs
+        type:"SET_AV",
+        payload: avs
       })
     })
     .catch((err) => {
-      console.log("\nGET responce ERROR\n", err);
+      console.log("\nAV SET responce ERROR\n", err);
       dispatch({
-        type:"GET_BVS_REJECTED",
-        payload:"there was an error while getting binary values"
-        //payload:err
+        type:"SET_AVS_REJECTED",
+        payload:"there was an error while setting analog values"        
       })
     })
   }

@@ -29,7 +29,8 @@ export class BVsList extends React.Component {
                     title={BV.title}
                     description={BV.description}                    
                     value={BV.value} 
-                    _id={BV._id}                   
+                    _id={BV._id} 
+                    readOnly={BV.readOnly}                  
                 />
             </Col>
         )
@@ -48,7 +49,8 @@ export class BVsList extends React.Component {
 
 function mapStateToProps(state){
   return {
-   bvs: state.binary.sort((a, b) => a.title > b.title)
+  // bvs: state.binary.sort((a, b) => a.title > b.title)
+   bvs: state.binary
   }
 }
 
