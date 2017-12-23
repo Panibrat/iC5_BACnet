@@ -17,6 +17,7 @@ import BVsList from './components/pages/BvList';
 import AvItem from './components/pages/AvItem';
 import Menu from './components/menu';
 import Footer from './components/footer';
+import AdminForm from './components/AdminForm';
 
 import {getAVs} from './actions/AVsActions';
 
@@ -41,7 +42,7 @@ const Routes = (
             <Route exact path="/" component={MainLis}/>
             <Route exact path="/binary" component={BVsList}/>
             <Route exact path="/analog" component={AVsList}/>
-            <Route path="/admin" component={AVsList}/>
+            <Route path="/admin" component={AdminForm}/>
             <Route path="/cart" component={AVsList}/>
           </Switch>
         <Footer />
