@@ -155,7 +155,7 @@ var loopBACnet = setInterval(() => {
       .catch((e) => e );
   }    
   //console.log('buffer:\n', buffer);
-}, 500);
+}, 50);
 
 
 
