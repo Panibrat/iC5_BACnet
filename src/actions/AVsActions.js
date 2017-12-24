@@ -48,7 +48,42 @@ export function setAV(av) {
 }
 export function postAV(av) {   
   return function(dispatch){  
-    console.log('postAV:', av);     
+    console.log('postAV:', av);
+      axios.post('/postav', av)
+          .then((responce) => {
+              var posted = responce.data;
+              console.log('postedAV response:', posted);
+              dispatch({
+                  type:"POST_AV",
+                  payload: posted
+              })
+          })
+          .catch((err) => {
+              console.log("\nAV POST responce ERROR\n", err);
+              dispatch({
+                  type:"POST_AVS_REJECTED",
+                  payload:"there was an error while adding analog values"
+              })
+          })
 
   }
+}
+
+export function deleteAVs(av) {
+  console.log('DELETE:', av);
+    /*return function (dispatch) {
+        axios.delete("/avs/" + av._id)
+            .then((responce) => {
+                dispatch({
+                    type: "DELETE_AV",
+                    payload: av
+                })
+            })
+            .catch((err) => {
+                dispatch({
+                    type: "DELETE_AV_REJECTED",
+                    payload: err
+                })
+            })
+    }*/
 }

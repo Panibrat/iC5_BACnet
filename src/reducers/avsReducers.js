@@ -19,5 +19,11 @@ export function avsReducers(avs = [], action) {
             break;
     }
 
+    switch (action.type) {
+        case "POST_AV":
+            return [ ...avs, action.payload ];
+            break;
+    }
+
     return avs
 }

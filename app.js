@@ -4,15 +4,15 @@ const bacnet = require('bacstack');
 const client = new bacnet();
 const IP = '192.168.0.222';
 
-// const readAV = require('./backnet/readAVpromise'); // use with iC5
-// const readBV = require('./backnet/readBVpromise'); // use with iC5
-// const writeBV = require('./backnet/writeBVpromise'); // use with iC5
-// const writeAV = require('./backnet/writeAVpromise'); // use with iC5
+const readAV = require('./backnet/readAVpromise'); // use with iC5
+const readBV = require('./backnet/readBVpromise'); // use with iC5
+const writeBV = require('./backnet/writeBVpromise'); // use with iC5
+const writeAV = require('./backnet/writeAVpromise'); // use with iC5
 
-const readAV = require('./backnet/readAVfromJSON'); // use without iC5
-const readBV = require('./backnet/readBVfromJSON'); // use without iC5
-const writeBV = require('./backnet/writeBVtoJSON'); // use without iC5
-const writeAV = require('./backnet/writeAVtoJSON'); // use without iC5
+// const readAV = require('./backnet/readAVfromJSON'); // use without iC5
+// const readBV = require('./backnet/readBVfromJSON'); // use without iC5
+// const writeBV = require('./backnet/writeBVtoJSON'); // use without iC5
+// const writeAV = require('./backnet/writeAVtoJSON'); // use without iC5
 
 
 const avToMongo = require('./backnet/AVtoMongo');
@@ -209,15 +209,30 @@ app.put('/av/:_id', function(req, res) {
     console.log('Error when writing AV to Controller', e);    
   }); 
 
-})
+});
+app.post('/postav', function(req, res) {
+    var av = req.body;
+    AVs.create(av, function(err,avs) {
+        if (err) {
+            throw err;
+        }
+        res.json(avs);
+        //console.log('\nPOST book\n');
+    })
+});
 
 
 // END APIs
 
 
-app.get('*', function(req, res) {
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+app.get('/cast', function(req, res) {
+  res.sendFile(path.resolve(__dirname, 'chromecast', 'chromehellotext.html'))
 });
+
+app.get('*', function(req, res) {
+    res.sendFile(path.resolve(__dirname, 'public', 'index.html'))
+});
+
 
 
 // catch 404 and forward to error handler

@@ -14,7 +14,7 @@ import reducers from './reducers/index';
 import MainLis from './components/pages/MainList';
 import AVsList from './components/pages/AvList';
 import BVsList from './components/pages/BvList';
-import AvItem from './components/pages/AvItem';
+
 import Menu from './components/menu';
 import Footer from './components/footer';
 import AdminForm from './components/AdminForm';

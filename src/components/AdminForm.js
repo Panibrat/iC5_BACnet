@@ -1,12 +1,10 @@
 import React from 'react';
 import {Well, Panel, FormControl, FormGroup, ControlLabel, Button, Checkbox} from 'react-bootstrap';
 
-
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {findDOMNode} from 'react-dom';
-//import {postBooks, deleteBooks} from '../../actions/booksActions';
-import {postAV, getAVs} from '../actions/AVsActions';
+import {postAV, getAVs, deleteAVs} from '../actions/AVsActions';
 
 export class AdminForm extends React.Component {
   constructor(props) {
@@ -18,33 +16,32 @@ export class AdminForm extends React.Component {
   }
 
   handleSubmit(){
-    console.log('this.props', this.props);
-    console.log('this.refs', this.refs);
-    
-    
-    // description: String,    
-    // units: String,    
-    // readOnly: Boolean
+    //console.log('this.props', this.props);
+    //console.log('this.refs', this.refs);
+    //console.log('this.refs.check_me.checked', this.refs.check_me.checked);
 
-    const networkPoint = 
+      const networkPoint =
       {
-        //id: 12121,
         title: findDOMNode(this.refs.title).value,
-        //title: this.refs.title.value + '!?!?', - doesn't work with react-bootstrap component
         description:  findDOMNode(this.refs.description).value,
         units: findDOMNode(this.refs.units).value,
-        readOnly: findDOMNode(this.refs.readOnly)
+        readOnly: findDOMNode(this.refs.check_me).checked ,
+        value: 0
+
       };
     findDOMNode(this.refs.title).value = "";
     findDOMNode(this.refs.description).value = '';
-    findDOMNode(this.refs.units).value = '';   
+    findDOMNode(this.refs.units).value = '';
+
     this.props.postAV(networkPoint);
   }
 
     onDelete(){
-      // var id = findDOMNode(this.refs.delete).value
-      // var bookToDelete = {_id: id}
-      // this.props.deleteBooks(bookToDelete);
+
+      //const id = findDOMNode(this.refs.delete).value;
+      //console.log('this.refs', id);
+      //const avToDelete = {_id: id};
+      //this.props.deleteAVs(avToDelete);
   }
 
   render() {
@@ -54,19 +51,6 @@ export class AdminForm extends React.Component {
     return (
       <Well>
         <Panel>
-          <FormGroup>
-            <Checkbox inline>
-              1
-            </Checkbox>
-            {' '}
-            <Checkbox inline>
-              2
-            </Checkbox>
-            {' '}
-            <Checkbox inline>
-              3
-            </Checkbox>
-          </FormGroup>
           <FormGroup controlId="title">
             <ControlLabel>Type of point</ControlLabel>
             <FormControl
@@ -75,11 +59,8 @@ export class AdminForm extends React.Component {
               placeholder="AV0"
           />
           </FormGroup>
-          
-          <FormGroup controlId="readOnly">
-            <Checkbox defaultChecked inline >
-              Read Only
-             </Checkbox>             
+          <FormGroup controlId="readonly">
+            <input type="checkbox" ref="check_me" defaultChecked  /> Read Only
           </FormGroup>
           <FormGroup controlId="description">
             <ControlLabel>Description</ControlLabel>
@@ -101,7 +82,7 @@ export class AdminForm extends React.Component {
         </Panel>
         <Panel>
           <FormGroup controlId="formControlsSelect">
-            <ControlLabel>Select book to deleteeee</ControlLabel>
+            <ControlLabel>Select AV to delete</ControlLabel>
             <FormControl ref="delete" componentClass="select" placeholder="select">
               <option value="select">select</option>
               {pointsList}
@@ -126,7 +107,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     postAV: postAV,
-    getAVs: getAVs
+    getAVs: getAVs,
+    deleteAVs: deleteAVs
     
   }, dispatch)
 };
