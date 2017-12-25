@@ -64,8 +64,16 @@ const dataToSend = {title: 'AV101010', value: 777};
 io.on('connection', (socketClient) => {
   //socketClient.emit('newAV', dataToSend);  
   //socketClient.emit('newBV');
+
+    socketClient.on('pointsUpdate', () => {
+        //UPDATE BUFFER!!!
+        getAVPointArray().then((avs) => covertAVforLoop(avs)).then((converted) => pointsAV = converted)
+            .catch((err) => {console.log(err)});
+        });
+
   console.log('New User connected');
 });
+
 
 const clientsIO = io.sockets.clients();
 
@@ -139,15 +147,45 @@ function onListening() {
 //BACnet LOOOP
 var buffer = [];
 
+
+//////GET AV POINTS
+var pointsAV = [];
+
+const getAVPointArray = function () {
+    return new Promise((resolve, reject) => {
+        AVs.find(function(err, avs) {
+            if (err) {
+                reject(err);
+            }
+            resolve(avs);
+        });
+    })
+};
+getAVPointArray().then((avs) => covertAVforLoop(avs)).then((converted) => pointsAV = converted)
+    .catch((err) => {console.log(err)});
+
+const covertAVforLoop = (dbResult) => {
+    return dbResult.map((item) => {
+        if(item.title.slice(0,2) == 'AV') {
+            return Number(item.title.slice(2));
+        }
+    })
+};
+
+//////END GET AV POINTS
+
+
+
 var loopBACnet = setInterval(() => {
-    for(let i=0; i<10; i++) {
-      readAV(client, IP, i)
-      .then((result) => isChangedAV(result))
-      .then((av) => {
-          avToMongo(av, AVs, clientsIO);
-      })
-      .catch((e) => e );
-  }
+    pointsAV.forEach((pointNumber) => {
+        readAV(client, IP, pointNumber)
+            .then((result) => isChangedAV(result))
+            .then((av) => {
+                avToMongo(av, AVs, clientsIO);
+            })
+            .catch((e) => e );
+    });
+
   for(let i=0; i<12; i++) {
       readBV(client, IP, i)
       .then((result) => isChangedBV(result))

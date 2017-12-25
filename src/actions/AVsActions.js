@@ -1,5 +1,7 @@
 "use strict"
 import axios from 'axios';
+import socketIOClient from "socket.io-client";
+const socket = socketIOClient();
 
 export function getAVs() {
   return function(dispatch){
@@ -53,6 +55,7 @@ export function postAV(av) {
           .then((responce) => {
               var posted = responce.data;
               console.log('postedAV response:', posted);
+              socket.emit('pointsUpdate');
               dispatch({
                   type:"POST_AV",
                   payload: posted
