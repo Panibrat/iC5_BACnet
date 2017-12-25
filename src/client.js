@@ -4,7 +4,7 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 
-import {applyMiddleware, createStore} from 'redux';
+import { applyMiddleware, createStore, compose } from 'redux';
 import logger from 'redux-logger';
 
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
@@ -19,16 +19,14 @@ import Menu from './components/menu';
 import Footer from './components/footer';
 import AdminForm from './components/AdminForm';
 
-import {getAVs} from './actions/AVsActions';
-
-
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const middeleware = applyMiddleware(
     thunk,
     logger,
     //window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     );
-const store = createStore(reducers, middeleware);
+const store = createStore(reducers, composeEnhancers(middeleware));
 store.subscribe(function() {
   //console.log('current state is: ', store.getState());
 });
