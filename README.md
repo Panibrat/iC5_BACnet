@@ -32,6 +32,12 @@ npm start
     no: Skip
 
 
+#### To implement Alarm archive:
+
+#### To implement Points Trend view:
+
+#### To implement Alarms e-mail notification:
+
 #### To implement Cromecast:
 Cast content to chromecast device using castv2 / nodecast-js (or simular). 
 CDK: https://developers.google.com/cast/
