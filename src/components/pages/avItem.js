@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {Well, Col, Row, Button} from 'react-bootstrap';
+import {Well, Col, Row, Button, Badge} from 'react-bootstrap';
 
 import {setAV} from '../../actions/AVsActions';
 
@@ -61,8 +61,10 @@ class AvItem extends React.Component {
       <Well>
         <Row>
           <Col xs={12}>
-            <p>{this.props.title} <b>{ this.state.showProps ? this.props.value.toPrecision(3) : this.state.set.toPrecision(3)  }</b> {this.props.units}</p>
-            <p>{this.props.description}</p>            
+            <Badge className="badge">{this.props.title}</Badge>
+            <p> {this.props.description} <b>{ this.state.showProps ? this.props.value.toPrecision(3) : this.state.set.toPrecision(3)  }</b> {this.props.units}</p>
+               
+                     
           </Col>             
 
         </Row>

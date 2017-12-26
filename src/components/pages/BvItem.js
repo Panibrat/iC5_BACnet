@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {Well, Col, Row, Button} from 'react-bootstrap';
+import {Well, Col, Row, Button, Badge} from 'react-bootstrap';
 
 import {setBV} from '../../actions/BVsActions';
 
@@ -25,8 +25,8 @@ class BvItem extends React.Component {
       <Well>
         <Row>
           <Col xs={12}>
-            <p>{this.props.title} { (this.props.value) ? 'ON' : 'OFF' } </p>
-            <p>{this.props.description}</p> 
+            <Badge className="badge">{this.props.title}</Badge>
+            <p>{this.props.description} <b>{ (this.props.value) ? 'ON' : 'OFF' } </b></p>             
              {(this.props.readOnly) || 
                 <Button 
                 onClick={this.handleClick} 

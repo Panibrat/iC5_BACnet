@@ -56359,9 +56359,15 @@ var AvItem = function (_React$Component) {
             _reactBootstrap.Col,
             { xs: 12 },
             _react2.default.createElement(
+              _reactBootstrap.Badge,
+              { className: 'badge' },
+              this.props.title
+            ),
+            _react2.default.createElement(
               'p',
               null,
-              this.props.title,
+              ' ',
+              this.props.description,
               ' ',
               _react2.default.createElement(
                 'b',
@@ -56370,11 +56376,6 @@ var AvItem = function (_React$Component) {
               ),
               ' ',
               this.props.units
-            ),
-            _react2.default.createElement(
-              'p',
-              null,
-              this.props.description
             )
           )
         ),
@@ -56505,17 +56506,21 @@ var BvItem = function (_React$Component) {
             _reactBootstrap.Col,
             { xs: 12 },
             _react2.default.createElement(
-              'p',
-              null,
-              this.props.title,
-              ' ',
-              this.props.value ? 'ON' : 'OFF',
-              ' '
+              _reactBootstrap.Badge,
+              { className: 'badge' },
+              this.props.title
             ),
             _react2.default.createElement(
               'p',
               null,
-              this.props.description
+              this.props.description,
+              ' ',
+              _react2.default.createElement(
+                'b',
+                null,
+                this.props.value ? 'ON' : 'OFF',
+                ' '
+              )
             ),
             this.props.readOnly || _react2.default.createElement(
               _reactBootstrap.Button,
