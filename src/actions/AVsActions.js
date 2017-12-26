@@ -73,20 +73,29 @@ export function postAV(av) {
 }
 
 export function deleteAVs(av) {
-  console.log('DELETE:', av);
-    /*return function (dispatch) {
-        axios.delete("/avs/" + av._id)
-            .then((responce) => {
-                dispatch({
-                    type: "DELETE_AV",
-                    payload: av
-                })
+  console.log('DELETE:');
+  return function (dispatch) {
+    axios.delete("/av/" + av.title)
+        .then((response) => {
+          //console.log('response', response); 
+          socket.emit('pointsUpdate');         
+          dispatch({
+            type: "DELETE_AV",
+            payload: av
+          })
+        })
+        .catch((err) => {
+          //console.log('ERR', err);
+            dispatch({
+                type: "DELETE_AV_REJECTED",
+                payload: err
             })
-            .catch((err) => {
-                dispatch({
-                    type: "DELETE_AV_REJECTED",
-                    payload: err
-                })
-            })
-    }*/
+        })
 }
+
+
+
+
+
+}
+

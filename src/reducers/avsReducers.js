@@ -1,3 +1,5 @@
+import { log } from "util";
+
 "use strict"
 export function avsReducers(avs = [], action) {      
     switch (action.type) {
@@ -15,6 +17,14 @@ export function avsReducers(avs = [], action) {
             }
             return av;
         });               
+            return newAVs;
+            break;
+    }
+    switch (action.type) {
+        case "DELETE_AV": 
+        const newAVs = avs.filter((av) => {     
+            return av.title !== action.payload.title           
+        });   
             return newAVs;
             break;
     }

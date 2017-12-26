@@ -4,22 +4,21 @@ const bacnet = require('bacstack');
 const client = new bacnet();
 const IP = '192.168.0.222';
 
-const readAV = require('./backnet/readAVpromise'); // use with iC5
-const readBV = require('./backnet/readBVpromise'); // use with iC5
-const writeBV = require('./backnet/writeBVpromise'); // use with iC5
-const writeAV = require('./backnet/writeAVpromise'); // use with iC5
+//const readAV = require('./backnet/readAVpromise'); // use with iC5
+//const readBV = require('./backnet/readBVpromise'); // use with iC5
+//const writeBV = require('./backnet/writeBVpromise'); // use with iC5
+//const writeAV = require('./backnet/writeAVpromise'); // use with iC5
 
-// const readAV = require('./backnet/readAVfromJSON'); // use without iC5
-// const readBV = require('./backnet/readBVfromJSON'); // use without iC5
-// const writeBV = require('./backnet/writeBVtoJSON'); // use without iC5
-// const writeAV = require('./backnet/writeAVtoJSON'); // use without iC5
+const readAV = require('./backnet/readAVfromJSON'); // use without iC5
+const readBV = require('./backnet/readBVfromJSON'); // use without iC5
+const writeBV = require('./backnet/writeBVtoJSON'); // use without iC5
+const writeAV = require('./backnet/writeAVtoJSON'); // use without iC5
 
 
 const avToMongo = require('./backnet/AVtoMongo');
 const bvToMongo = require('./backnet/BVtoMongo');
 const AVs = require('./models/AV.js');
 const BVs = require('./models/BV.js');
-
 
 var express = require('express');
 var path = require('path');
@@ -67,9 +66,15 @@ io.on('connection', (socketClient) => {
 
     socketClient.on('pointsUpdate', () => {
         //UPDATE BUFFER!!!
+        console.log('UPDATE BUFFER!!!');
         getAVPointArray().then((avs) => covertAVforLoop(avs)).then((converted) => pointsAV = converted)
             .catch((err) => {console.log(err)});
-        });
+
+        getBVPointArray().then((bvs) => covertBVforLoop(bvs)).then((converted) => pointsBV = converted)
+            .catch((err) => {console.log(err)});
+
+        buffer = [];    
+        });        
 
   console.log('New User connected');
 });
@@ -148,8 +153,9 @@ function onListening() {
 var buffer = [];
 
 
-//////GET AV POINTS
+//////GET AV + BV POINTS
 var pointsAV = [];
+var pointsBV = [];
 
 const getAVPointArray = function () {
     return new Promise((resolve, reject) => {
@@ -161,15 +167,48 @@ const getAVPointArray = function () {
         });
     })
 };
+const getBVPointArray = function () {
+    return new Promise((resolve, reject) => {
+        BVs.find(function(err, bvs) {
+            if (err) {
+                reject(err);
+            }
+            resolve(bvs);
+        });
+    })
+};
 getAVPointArray().then((avs) => covertAVforLoop(avs)).then((converted) => pointsAV = converted)
     .catch((err) => {console.log(err)});
 
+getBVPointArray().then((bvs) => covertBVforLoop(bvs)).then((converted) => pointsBV = converted)
+    .catch((err) => {console.log(err)});    
+
 const covertAVforLoop = (dbResult) => {
-    return dbResult.map((item) => {
-        if(item.title.slice(0,2) == 'AV') {
-            return Number(item.title.slice(2));
-        }
-    })
+  const hasTitleArray = dbResult.filter((item) => {return item.title});
+  const pointsAVArray = hasTitleArray.map((item) => {
+      if(item.title.slice(0,2) == 'AV') {
+          return Number(item.title.slice(2));
+      }
+      return;
+  });    
+  const uniquePointsArray = pointsAVArray.filter((number, index, array) => {
+      return array.indexOf(number) === index;
+  });
+  return uniquePointsArray;
+};
+
+const covertBVforLoop = (dbResult) => {
+  const hasTitleArray = dbResult.filter((item) => {return item.title});
+  const pointsBVArray = hasTitleArray.map((item) => {
+      if(item.title.slice(0,2) == 'BV') {
+          return Number(item.title.slice(2));
+      }
+      return;
+  });    
+  const uniquePointsArray = pointsBVArray.filter((number, index, array) => {
+      return array.indexOf(number) === index;
+  });
+  return uniquePointsArray;
 };
 
 //////END GET AV POINTS
@@ -185,15 +224,19 @@ var loopBACnet = setInterval(() => {
             })
             .catch((e) => e );
     });
+    pointsBV.forEach((pointNumber) => {
+        readBV(client, IP, pointNumber)
+            .then((result) => isChangedBV(result))
+            .then((bv) => {
+                avToMongo(bv, BVs, clientsIO);
+            })
+            .catch((e) => e );
+    });
 
-  for(let i=0; i<12; i++) {
-      readBV(client, IP, i)
-      .then((result) => isChangedBV(result))
-      .then((bv) => {bvToMongo(bv, BVs, clientsIO)})
-      .catch((e) => e );
-  }    
   //console.log('buffer:\n', buffer);
-}, 50);
+  //console.log('pointsBV:\n', pointsBV);
+ //console.log('pointsAV:\n', pointsAV);
+}, 100);
 
 
 
@@ -256,6 +299,37 @@ app.post('/postav', function(req, res) {
         }
         res.json(avs);
         //console.log('\nPOST book\n');
+    })
+});
+app.post('/postbv', function(req, res) {
+  var bv = req.body;
+  BVs.create(bv, function(err,bvs) {
+      if (err) {
+          throw err;
+      }
+      res.json(bvs);
+      //console.log('\nPOST book\n');
+  })
+});
+app.delete('/av/:title', function(req, res) {
+    console.log('\nDELETE AV\n');
+    var query = {title: req.params.title};
+    AVs.remove(query, function(err, deletedAV) {
+      if (err) {
+        throw err;
+      }
+      res.json(deletedAV)
+    })
+});
+
+app.delete('/bv/:title', function(req, res) {
+    console.log('\nDELETE BV\n');
+    var query = {title: req.params.title};
+    BVs.remove(query, function(err, deletedBV) {
+      if (err) {
+        throw err;
+      }
+      res.json(deletedBV)
     })
 });
 

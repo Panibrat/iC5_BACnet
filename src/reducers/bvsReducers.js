@@ -18,6 +18,19 @@ export function bvsReducers(bvs = [], action) {
             return newBVs;
             break;
     }
+    switch (action.type) {
+        case "POST_BV":
+            return [ ...bvs, action.payload ];
+            break;
+    }
+    switch (action.type) {
+        case "DELETE_BV": 
+        const newBVs = bvs.filter((bv) => {     
+            return bv.title !== action.payload.title           
+        });   
+            return newBVs;
+            break;
+    }
 
     return bvs
 }

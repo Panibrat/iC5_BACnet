@@ -32,15 +32,27 @@ getAVPointArray()
     })
     .catch((err) => {console.log(err)});
 
+// const covertAVforLoop = (dbResult) => {
+//     return dbResult.map((item) => {
+//         if(item.title.slice(0,2) == 'AV') {
+//             return Number(item.title.slice(2));
+//         }
+//         return;
+//     })
+// };
 const covertAVforLoop = (dbResult) => {
-    return dbResult.map((item) => {
+    var hasTitleArray = dbResult.filter((item) => {return item.title});
+    var pointsAVArray = hasTitleArray.map((item) => {
         if(item.title.slice(0,2) == 'AV') {
             return Number(item.title.slice(2));
         }
         return;
-    })
+    });    
+    var uniquePointsArray = pointsAVArray.filter((number, index, array) => {
+        return array.indexOf(number) === index;
+    });
+    return uniquePointsArray;
 };
-
 
 class BACnetLoop {
     constructor(array) {
