@@ -15,7 +15,10 @@ export class AdminForm extends React.Component {
       this.onDelete = this.onDelete.bind(this);    
       this.onBVDelete = this.onBVDelete.bind(this);    
       this.onChangePointType = this.onChangePointType.bind(this);    
-      this.state = {point: 'AV'};  
+      this.state = {
+        point: 'AV',
+        error: ''
+      };  
     }
   componentDidMount(){
     this.props.getAVs();

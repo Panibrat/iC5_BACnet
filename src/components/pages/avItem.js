@@ -3,9 +3,23 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Well, Col, Row, Button, Badge} from 'react-bootstrap';
 
+import PropTypes from 'prop-types';
+
 import {setAV} from '../../actions/AVsActions';
 
+// NumbersList.propTypes = {
+//   x: React.PropTypes.number,
+//   y: React.PropTypes.string .isRequired 
+// }; 
+
+
 class AvItem extends React.Component {
+  // static PropTypes = {
+  //   value: PropTypes.number.isRequired,
+    
+  // };
+
+
   constructor(props){
     super(props);
     this.handleClick = this.handleClick.bind(this);
